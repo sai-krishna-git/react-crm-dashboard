@@ -58,14 +58,13 @@ react-crm-dashboard
 │   │   ├── index.js
 │   ├── package.json
 │   ├── tailwind.config.js
-│
-│── README.md
 
+```
 
 
 ⸻
 
-Features
+## Features
 
 ✅ User Authentication & Authorization (JWT)
 ✅ Role-Based Access Control (RBAC)
@@ -76,46 +75,46 @@ Features
 
 ⸻
 
-Installation & Setup
+## Installation & Setup
 
 1️⃣ Clone the Repository
-
+```bash
 git clone https://github.com/your-repo/react-crm-dashboard.git
 cd react-crm-dashboard
-
+```
 2️⃣ Install Backend Dependencies
-
+```bash
 cd backend
 npm install
-
+```
 3️⃣ Install Frontend Dependencies
-
+```bash
 cd ../frontend
 npm install
-
+```
 
 
 ⸻
 
-Running the Application
+## Running the Application
 
 1. Start the Backend Server
-
+```bash
 cd backend
 npm start
-
+```
 Backend will be running on http://localhost:5000.
 
 2. Start the Frontend Server
-
+```bash
 cd frontend
 npm start
-
+```
 Frontend will be available at http://localhost:3000.
 
 ⸻
 
-Technologies Used
+## Technologies Used
 
 Technology	Purpose
 React.js	Frontend UI
@@ -130,7 +129,7 @@ PostCSS	CSS Processing
 
 ⸻
 
-API Endpoints
+## API Endpoints
 
 Method	Endpoint	Description
 POST	/api/users/register	Register a new user
@@ -141,7 +140,7 @@ GET	/api/users/profile	Get user profile (protected)
 
 ⸻
 
-Contributing
+## Contributing
 
 Contributions are welcome! Please follow these steps:
 	1.	Fork the repository
@@ -164,12 +163,7 @@ git push origin feature-branch
 
 ⸻
 
-License
+## License
 
 This project is licensed under the MIT License.
 
-⸻
-
-✅ Now, Your README Will Display Properly!
-
-Make sure to copy and paste this updated version into your README.md file. Let me know if you need further modifications! 🚀
