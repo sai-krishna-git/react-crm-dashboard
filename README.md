@@ -79,7 +79,7 @@ react-crm-dashboard
 
 1️⃣ Clone the Repository
 ```bash
-git clone https://github.com/your-repo/react-crm-dashboard.git
+git clone https://github.com/ShashankByalla/react-crm-dashboard.git
 cd react-crm-dashboard
 ```
 2️⃣ Install Backend Dependencies
