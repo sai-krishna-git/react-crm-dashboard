@@ -1,8 +1,10 @@
 {
   "homepage": "https://ShashankByalla.github.io/react-crm-dashboard",
   "scripts": {
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "predeploy": "cd frontend && npm run build",
+    "deploy": "gh-pages -d frontend/build",
+    "start": "cd frontend && npm start",
+    "build": "cd frontend && npm run build"
   },
   "devDependencies": {
     "gh-pages": "^6.3.0"
