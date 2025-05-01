@@ -1,95 +1,114 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Bar, Pie } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  ArcElement,
+  Tooltip,
+  Legend,
+} from "chart.js";
 import { FaShoppingCart, FaDollarSign, FaHeart, FaUser } from "react-icons/fa";
-import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { MdDashboard } from "react-icons/md";
 import WebsiteAnalysis from "../components/WebsiteAnalysis";
+import Navbar from "../components/Navbar";
+import { useNavigate, useLocation } from "react-router-dom";
+
+// Register Chart.js components
+ChartJS.register(BarElement, CategoryScale, LinearScale, ArcElement, Tooltip, Legend);
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // ✅ 1. Extract token from URL & store in localStorage
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const token = params.get('token');
+    if (token) {
+      localStorage.setItem("isAuthenticated", "true");
+      localStorage.setItem("token", token);
+      navigate("/dashboard"); // Clean the URL after saving token
+    }
+  }, [location.search, navigate]);
+
+  // ✅ 2. Auth Protection
+  const isAuthenticated = localStorage.getItem("isAuthenticated");
+
+  useEffect(() => {
+    if (isAuthenticated !== "true") navigate("/login");
+  }, [isAuthenticated, navigate]);
+
+  // Bar Chart Data
+  const salesData = {
+    labels: ["January", "February", "March", "April", "May"],
+    datasets: [
+      {
+        label: "Monthly Sales",
+        data: [65, 59, 80, 81, 56],
+        backgroundColor: "#3B82F6",
+        borderColor: "#2563EB",
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  // Pie Chart Data
+  const browserData = {
+    labels: ["Chrome", "Firefox", "Edge", "Safari", "Opera"],
+    datasets: [
+      {
+        data: [55, 20, 15, 7, 3],
+        backgroundColor: ["#EF4444", "#22C55E", "#3B82F6", "#F59E0B", "#6366F1"],
+      },
+    ],
+  };
+
   return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
-      <Sidebar className="bg-blue-900 text-white w-64">
-        <Menu>
-          <MenuItem icon={<MdDashboard />}>Dashboard</MenuItem>
-          <MenuItem icon={<FaShoppingCart />}>Orders</MenuItem>
-          <MenuItem icon={<FaDollarSign />}>Sales</MenuItem>
-        </Menu>
-      </Sidebar>
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white p-6">
+      {/* Navbar */}
+      <Navbar />
 
-      {/* Main Content */}
-      <div className="flex-1 p-6">
-        {/* Stats Cards */}
-        <div className="grid grid-cols-4 gap-4">
-          <div className="bg-red-500 text-white p-5 rounded-xl shadow-md flex items-center justify-between">
-            <FaShoppingCart className="text-3xl" />
+      {/* Stats Cards Section */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-6">
+        {[
+          { icon: FaShoppingCart, label: "Total Profit", value: "$1.5M", color: "bg-red-500 dark:bg-red-700" },
+          { icon: FaHeart, label: "Likes", value: "4,231", color: "bg-blue-500 dark:bg-blue-700" },
+          { icon: FaDollarSign, label: "Sales", value: "460", color: "bg-green-500 dark:bg-green-700" },
+          { icon: FaUser, label: "New Members", value: "248", color: "bg-yellow-500 dark:bg-yellow-700" },
+        ].map((stat, index) => (
+          <div key={index} className={`${stat.color} text-white p-5 rounded-xl shadow-md flex items-center justify-between`}>
+            <stat.icon className="text-3xl" />
             <div>
-              <p>Total Profit</p>
-              <h2 className="text-xl font-bold">$1.5M</h2>
+              <p>{stat.label}</p>
+              <h2 className="text-xl font-bold">{stat.value}</h2>
             </div>
           </div>
-          <div className="bg-blue-500 text-white p-5 rounded-xl shadow-md flex items-center justify-between">
-            <FaHeart className="text-3xl" />
-            <div>
-              <p>Likes</p>
-              <h2 className="text-xl font-bold">4,231</h2>
-            </div>
-          </div>
-          <div className="bg-green-500 text-white p-5 rounded-xl shadow-md flex items-center justify-between">
-            <FaDollarSign className="text-3xl" />
-            <div>
-              <p>Sales</p>
-              <h2 className="text-xl font-bold">460</h2>
-            </div>
-          </div>
-          <div className="bg-yellow-500 text-white p-5 rounded-xl shadow-md flex items-center justify-between">
-            <FaUser className="text-3xl" />
-            <div>
-              <p>New Members</p>
-              <h2 className="text-xl font-bold">248</h2>
-            </div>
+        ))}
+      </div>
+
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+        {/* Bar Chart */}
+        <div className="p-4 bg-white dark:bg-gray-800 shadow-md rounded-xl">
+          <h3 className="text-lg font-semibold mb-3">Sales Overview</h3>
+          <div className="h-80">
+            <Bar data={salesData} options={{ responsive: true, maintainAspectRatio: false }} />
           </div>
         </div>
 
-        {/* Charts Section */}
-        <div className="grid grid-cols-2 gap-4 mt-6">
-          {/* Bar Chart */}
-          <div className="p-4 bg-white shadow-md rounded-xl">
-            <h3 className="text-lg font-semibold mb-2">Sales Overview</h3>
-            <Bar
-              data={{
-                labels: ["Jan", "Feb", "Mar"],
-                datasets: [
-                  {
-                    data: [65, 59, 80],
-                    backgroundColor: "blue",
-                  },
-                ],
-              }}
-            />
-          </div>
-
-          {/* Pie Chart */}
-          <div className="p-4 bg-white shadow-md rounded-xl">
-            <h3 className="text-lg font-semibold mb-2">Browser Usage</h3>
-            <Pie
-              data={{
-                labels: ["Chrome", "Firefox", "Edge"],
-                datasets: [
-                  {
-                    data: [55, 25, 20],
-                    backgroundColor: ["#f00", "#0f0", "#00f"],
-                  },
-                ],
-              }}
-            />
+        {/* Pie Chart */}
+        <div className="p-4 bg-white dark:bg-gray-800 shadow-md rounded-xl">
+          <h3 className="text-lg font-semibold mb-3">Browser Usage</h3>
+          <div className="h-80 flex items-center justify-center">
+            <Pie data={browserData} options={{ responsive: true, maintainAspectRatio: false }} />
           </div>
         </div>
+      </div>
 
-        {/* Website Analysis */}
-        <div className="mt-6">
-          <WebsiteAnalysis />
-        </div>
+      {/* Website Analysis */}
+      <div className="mt-6">
+        <WebsiteAnalysis />
       </div>
     </div>
   );

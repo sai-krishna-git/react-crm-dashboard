@@ -1,0 +1,110 @@
+/* EmailMarketing.css */
+.email-container {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 20px;
+  text-align: center;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.email-container h2 {
+  color: #333;
+  margin-bottom: 15px;
+  font-size: 22px;
+}
+
+/* Input and Textarea Styles */
+.email-input,
+.email-textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: 0.3s ease-in-out;
+}
+
+.email-textarea {
+  height: 120px;
+  resize: none;
+}
+
+.email-input:focus,
+.email-textarea:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Buttons */
+.send-button,
+.analyze-button {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  color: white;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-top: 10px;
+}
+
+.send-button:hover,
+.analyze-button:hover {
+  background-color: #0056b3;
+}
+
+.send-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Sentiment Analysis Results */
+.sentiment-result {
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+.sentiment-result h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.sentiment-result p {
+  font-size: 16px;
+  margin: 5px 0;
+}
+
+.sentiment-result p:nth-child(2) { color: #28a745; } /* Positive */
+.sentiment-result p:nth-child(3) { color: #ffc107; } /* Neutral */
+.sentiment-result p:nth-child(4) { color: #dc3545; } /* Negative */
+.sentiment-result p:nth-child(5) { color: #007bff; } /* Overall Score */
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .email-container {
+    width: 90%;
+    padding: 15px;
+  }
+
+  .email-input,
+  .email-textarea {
+    font-size: 14px;
+  }
+
+  .send-button,
+  .analyze-button {
+    font-size: 14px;
+    padding: 10px;
+  }
+}

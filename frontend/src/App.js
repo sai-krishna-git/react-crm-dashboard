@@ -1,40 +1,150 @@
-import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
+
+// Components
 import Sidebar from "./components/Sidebar";
+import Protected from "./components/Protected";
+
+// Pages
 import Dashboard from "./pages/Dashboard";
 import Customers from "./pages/Customers";
 import Orders from "./pages/Orders";
 import Products from "./pages/Products";
 import About from "./pages/About";
+import EmailVerification from "./pages/EmailVerification";
+import Reports from "./pages/Reports";
+import EmailMarketing from "./pages/EmailMarketing";
+import Financials from "./pages/Financials";
+import Login from "./pages/Login";
+import CustomerLoginPage from "./pages/CustomerLoginPage";
+import CustomerDashboard from "./pages/CustomerDashboard";
 import NotFound from "./pages/NotFound";
-import ChartComponent from "./components/ChartComponent"; // ✅ Importing ChartComponent
+
+// Auth
+import { getToken } from "./auth";
+
 import "./App.css";
 
+// Google OAuth handler
+function GoogleAuthHandler({ setToken }) {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const tokenFromGoogle = urlParams.get("token");
+    if (tokenFromGoogle) {
+      localStorage.setItem("admin_token", tokenFromGoogle);
+      setToken(tokenFromGoogle);
+      navigate("/dashboard");
+    }
+  }, [location, navigate, setToken]);
+
+  return null;
+}
+
+// App Layout with conditional sidebar
+function AppLayout({ children, adminToken }) {
+  const location = useLocation();
+
+  const isAdminRoute = [
+    "/dashboard",
+    "/customers",
+    "/orders",
+    "/products",
+    "/financials",
+    "/reports",
+    "/about",
+    "/email-verification",
+    "/email-marketing",
+  ].some((route) => location.pathname.startsWith(route));
+
+  return (
+    <div className="App flex">
+      {adminToken && isAdminRoute && <Sidebar />}
+      <main className="content flex-1 p-4">{children}</main>
+    </div>
+  );
+}
+
 function App() {
+  const [adminToken, setAdminToken] = useState(getToken("admin"));
+  const [customerToken, setCustomerToken] = useState(getToken("customer"));
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setAdminToken(getToken("admin"));
+      setCustomerToken(getToken("customer"));
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+
   return (
     <Router>
-      <div className="App">
-        <Sidebar />
-        <div className="content">
-          <h1>CRM Dashboard</h1> {/* ✅ Added heading */}
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <>
-                  <Dashboard />
-                  <ChartComponent /> {/* ✅ Only on Dashboard */}
-                </>
-              }
-            />
-            <Route path="/customers" element={<Customers />} />
-            <Route path="/orders" element={<Orders />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/about" element={<About />} />
-            <Route path="*" element={<NotFound />} /> {/* ✅ Handle unknown routes */}
-          </Routes>
-        </div>
-      </div>
+      <GoogleAuthHandler setToken={setAdminToken} />
+      <AppLayout adminToken={adminToken}>
+        <Routes>
+          {/* Default Root: Redirect to Admin Login */}
+          <Route
+            path="/"
+            element={<Navigate to="/login" replace />}
+          />
+
+          {/* Admin Login */}
+          <Route
+            path="/login"
+            element={
+              adminToken ? <Navigate to="/dashboard" replace /> : <Login />
+            }
+          />
+
+          {/* Customer Login */}
+          <Route
+            path="/customer-login"
+            element={
+              customerToken ? (
+                <Navigate to="/customer-dashboard" replace />
+              ) : (
+                <CustomerLoginPage />
+              )
+            }
+          />
+
+          {/* Customer Dashboard */}
+          <Route
+            path="/customer-dashboard"
+            element={
+              customerToken ? (
+                <CustomerDashboard />
+              ) : (
+                <Navigate to="/customer-login" replace />
+              )
+            }
+          />
+
+          {/* Admin Protected Routes */}
+          <Route path="/dashboard" element={<Protected><Dashboard /></Protected>} />
+          <Route path="/customers" element={<Protected><Customers /></Protected>} />
+          <Route path="/orders" element={<Protected><Orders /></Protected>} />
+          <Route path="/products" element={<Protected><Products /></Protected>} />
+          <Route path="/financials" element={<Protected><Financials /></Protected>} />
+          <Route path="/about" element={<Protected><About /></Protected>} />
+          <Route path="/email-verification" element={<Protected><EmailVerification /></Protected>} />
+          <Route path="/reports" element={<Protected><Reports /></Protected>} />
+          <Route path="/email-marketing" element={<Protected><EmailMarketing /></Protected>} />
+
+          {/* 404 Page */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </AppLayout>
     </Router>
   );
 }

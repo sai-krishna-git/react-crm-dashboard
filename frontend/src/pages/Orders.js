@@ -11,34 +11,40 @@ const Orders = () => {
   ];
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+    <div className="p-6 lg:ml-64 md:ml-48 sm:ml-0 transition-all duration-300">
+      <h2 className="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-2">
         <FaBox className="text-blue-500" /> Orders
       </h2>
-      <div className="overflow-x-auto">
-        <table className="w-full bg-white border shadow-md rounded-lg">
-          <thead>
-            <tr className="bg-gray-200 text-gray-700">
-              <th className="p-3 border">Order ID</th>
-              <th className="p-3 border">Customer</th>
-              <th className="p-3 border">Total</th>
-              <th className="p-3 border">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.map((order) => (
-              <tr key={order.id} className="border hover:bg-gray-100">
-                <td className="p-3 border text-center">{order.id}</td>
-                <td className="p-3 border">{order.customer}</td>
-                <td className="p-3 border text-center font-semibold">{order.total}</td>
-                <td className="p-3 border flex items-center gap-2 justify-center">
-                  {order.icon} {order.status}
-                </td>
+
+      {orders.length === 0 ? (
+        <p className="text-lg text-gray-600">No orders available.</p>
+      ) : (
+        <div className="overflow-x-auto bg-white shadow-lg rounded-lg p-4 max-w-5xl">
+          <table className="min-w-full border border-gray-300">
+            <thead>
+              <tr className="bg-blue-600 text-white border-b border-gray-400">
+                <th className="p-4 text-left border-r border-gray-400">Order ID</th>
+                <th className="p-4 text-left border-r border-gray-400">Customer</th>
+                <th className="p-4 text-center border-r border-gray-400">Total</th>
+                <th className="p-4 text-center">Status</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {orders.map((order, index) => (
+                <tr
+                  key={order.id}
+                  className={`border-b border-gray-300 ${index % 2 === 0 ? "bg-gray-100" : "bg-white"} hover:bg-gray-200 transition duration-200`}
+                >
+                  <td className="p-4 font-semibold border-r border-gray-300">{order.id}</td>
+                  <td className="p-4 border-r border-gray-300">{order.customer}</td>
+                  <td className="p-4 text-center font-bold text-lg border-r border-gray-300">{order.total}</td>
+                  <td className="p-4 flex items-center gap-2 justify-center">{order.icon} <span className="font-medium">{order.status}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };
