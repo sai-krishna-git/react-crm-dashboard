@@ -203,6 +203,7 @@ exports.getCustomerDashboard = async (req, res) => {
  * @access  Customer
  */
 exports.getCustomerProfile = async (req, res) => {
+  console.log('Customer ID:', req.user.id); // Log the customer ID for debugging
   try {
     const customer = await Customer.findById(req.user.id).select('-password');
     if (!customer) {

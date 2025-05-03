@@ -38,7 +38,7 @@ const CustomerLoginPage = () => {
     const email = queryParams.get('email');
 
     if (token) {
-      setToken(token, 'customer');
+      //setToken(token, 'customer');
       if (name && email) {
         localStorage.setItem('user', JSON.stringify({ name, email }));
       }

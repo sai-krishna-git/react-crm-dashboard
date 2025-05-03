@@ -110,7 +110,7 @@ router.post('/login', async (req, res) => {
  * @desc    Get logged-in customer's profile
  * @access  Private (Customer only)
  */
-router.get('/profile', authMiddleware, customerMiddleware, async (req, res) => {
+router.get('/profile', customerMiddleware, async (req, res) => {
   try {
     const customer = await Customer.findById(req.user.id); // Changed User to Customer
 
@@ -118,13 +118,16 @@ router.get('/profile', authMiddleware, customerMiddleware, async (req, res) => {
       return res.status(404).json({ error: 'Customer not found' });
     }
 
-    res.json({
-      profile: {
-        id: customer._id,
-        name: customer.name, // Changed username to name
-        email: customer.email,
-        role: customer.role,
-      },
+    // Mock order data — replace this with real DB fetch later
+    const orders = [
+      { id: 1, product: 'Product A', date: '2025-04-01', status: 'Delivered' },
+      { id: 2, product: 'Product B', date: '2025-04-15', status: 'Shipped' },
+    ];
+
+    res.status(200).json({
+      message: 'Customer profile data fetched successfully',
+      customer,
+      orders,
     });
   } catch (error) {
     console.error('❌ Profile Error:', error);

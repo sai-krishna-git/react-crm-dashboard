@@ -22,18 +22,19 @@ const CustomerDashboard = () => {
     const fetchCustomerData = async () => {
       try {
         const response = await fetch(
-          'http://localhost:5000/api/customers/profile',
+          'http://localhost:5000/api/customers/auth/profile',
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-
+        console.log('Response:', response); // Debugging line
         if (response.ok) {
           const data = await response.json();
           // If your backend returns just customer object (not wrapped)
           setCustomer(data.customer || data);
           setOrders(data.orders || []);
         } else if (response.status === 401) {
+          console.log(response);
           logout('customer');
           navigate('/customer-login');
         } else {
