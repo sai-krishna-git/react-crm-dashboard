@@ -1,16 +1,31 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { toast } from "react-toastify";
-import Particles from "react-tsparticles";
-import { loadFull } from "tsparticles";
-import { FaUser, FaLock, FaGoogle, FaGithub, FaEye, FaEyeSlash } from "react-icons/fa";
-import { setToken } from "../auth";
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import {
+  FaArrowLeft,
+  FaUser,
+  FaLock,
+  FaGoogle,
+  FaGithub,
+  FaEye,
+  FaEyeSlash,
+} from 'react-icons/fa';
+import { setToken } from '../auth';
+import ParticlesBackground from '../components/ParticlesBackground';
 
 const CustomerLoginPage = () => {
-  const [email, setEmail] = useState(localStorage.getItem("rememberedEmail") || "");
-  const [password, setPassword] = useState(localStorage.getItem("rememberedPassword") || "");
-  const [rememberMe, setRememberMe] = useState(!!localStorage.getItem("rememberedEmail"));
-  const [darkMode, setDarkMode] = useState(localStorage.getItem("customerDarkMode") === "true");
+  const [email, setEmail] = useState(
+    localStorage.getItem('rememberedEmail') || ''
+  );
+  const [password, setPassword] = useState(
+    localStorage.getItem('rememberedPassword') || ''
+  );
+  const [rememberMe, setRememberMe] = useState(
+    !!localStorage.getItem('rememberedEmail')
+  );
+  const [darkMode, setDarkMode] = useState(
+    localStorage.getItem('customerDarkMode') === 'true'
+  );
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
@@ -18,17 +33,19 @@ const CustomerLoginPage = () => {
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
-    const token = queryParams.get("token");
-    const name = queryParams.get("name");
-    const email = queryParams.get("email");
+    const token = queryParams.get('token');
+    const name = queryParams.get('name');
+    const email = queryParams.get('email');
 
     if (token) {
-      setToken(token, "customer");
+      setToken(token, 'customer');
       if (name && email) {
-        localStorage.setItem("user", JSON.stringify({ name, email }));
+        localStorage.setItem('user', JSON.stringify({ name, email }));
       }
-      toast.success(`Customer Login Successful${name ? ` - Welcome ${name}` : ""}`);
-      navigate("/customer-dashboard");
+      toast.success(
+        `Customer Login Successful${name ? ` - Welcome ${name}` : ''}`
+      );
+      navigate('/customer-dashboard');
       window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, [location, navigate]);
@@ -37,81 +54,79 @@ const CustomerLoginPage = () => {
     e.preventDefault();
 
     if (!email || !password) {
-      toast.error("Please fill in both email and password.");
+      toast.error('Please fill in both email and password.');
       return;
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/customers/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await fetch(
+        'http://localhost:5000/api/customers/auth/login',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        }
+      );
 
       const data = await response.json();
 
       if (response.ok) {
         const { token, role, name } = data;
 
-        setToken(token, "customer");
-        localStorage.setItem("user", JSON.stringify({ name, email, role }));
+        setToken(token, 'customer');
+        localStorage.setItem('user', JSON.stringify({ name, email, role }));
 
         if (rememberMe) {
-          localStorage.setItem("rememberedEmail", email);
-          localStorage.setItem("rememberedPassword", password);
+          localStorage.setItem('rememberedEmail', email);
+          localStorage.setItem('rememberedPassword', password);
         } else {
-          localStorage.removeItem("rememberedEmail");
-          localStorage.removeItem("rememberedPassword");
+          localStorage.removeItem('rememberedEmail');
+          localStorage.removeItem('rememberedPassword');
         }
 
         toast.success(`Login Successful. Welcome ${name}`);
-        navigate("/customer-dashboard");
+        navigate('/customer-dashboard');
       } else {
-        toast.error(data.message || "Invalid credentials");
+        toast.error(data.message || 'Invalid credentials');
       }
     } catch (error) {
-      console.error("Login error:", error);
-      toast.error("An error occurred during login");
+      console.error('Login error:', error);
+      toast.error('An error occurred during login');
     }
   };
 
-  const handleGoogleLogin = () => window.open("http://localhost:5000/auth/google", "_self");
-  const handleGitHubLogin = () => window.open("http://localhost:5000/auth/github", "_self");
+  const handleGoogleLogin = () =>
+    window.open('http://localhost:5000/auth/google', '_self');
+  const handleGitHubLogin = () =>
+    window.open('http://localhost:5000/auth/github', '_self');
 
   const toggleDarkMode = () => {
     const newMode = !darkMode;
     setDarkMode(newMode);
-    localStorage.setItem("customerDarkMode", newMode);
+    localStorage.setItem('customerDarkMode', newMode);
   };
 
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
 
-  const particlesInit = async (main) => await loadFull(main);
-
   return (
-    <div className={`${darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-black"} h-screen flex items-center justify-center relative transition-colors duration-500`}>
-      <Particles
-        id="tsparticles"
-        init={particlesInit}
-        options={{
-          background: { color: { value: "transparent" } },
-          fpsLimit: 60,
-          particles: {
-            color: { value: "#ffffff" },
-            links: { color: "#ffffff", distance: 150, enable: true, opacity: 0.5, width: 1 },
-            collisions: { enable: true },
-            move: { enable: true, speed: 2 },
-            number: { density: { enable: true, area: 800 }, value: 80 },
-            opacity: { value: 0.5 },
-            shape: { type: "circle" },
-            size: { value: { min: 1, max: 5 } },
-          },
-          detectRetina: true,
-        }}
-        className="absolute inset-0 z-0"
-      />
+    <div
+      className={`${
+        darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-black'
+      } h-screen flex items-center justify-center relative transition-colors duration-500`}
+    >
+      <ParticlesBackground darkMode={darkMode} />
 
-      <form onSubmit={handleLogin} className="relative z-10 backdrop-blur-xl bg-white/30 dark:bg-black/30 p-8 rounded-2xl shadow-2xl w-96 max-w-full animate-fade-in">
+      <form
+        onSubmit={handleLogin}
+        className="relative z-10 backdrop-blur-xl bg-white/30 dark:bg-black/30 p-8 rounded-2xl shadow-2xl w-96 max-w-full animate-fade-in"
+      >
+        {/* Back Arrow Button */}
+        <button
+          onClick={() => navigate('/')}
+          className="absolute top-4 left-4 flex items-center text-blue-500 hover:text-blue-700 transition"
+        >
+          <FaArrowLeft className="mr-2" />
+        </button>
         <h2 className="text-3xl mb-6 text-center font-bold">Customer Login</h2>
 
         <div className="flex items-center border rounded px-2 mb-4 bg-white/20 dark:bg-white/10">
@@ -131,7 +146,7 @@ const CustomerLoginPage = () => {
         <div className="flex items-center border rounded px-2 mb-4 bg-white/20 dark:bg-white/10">
           <FaLock className="text-gray-600 dark:text-gray-300 mr-2" />
           <input
-            type={showPassword ? "text" : "password"}
+            type={showPassword ? 'text' : 'password'}
             placeholder="Password"
             className="w-full bg-transparent p-2 focus:outline-none"
             value={password}
@@ -140,7 +155,11 @@ const CustomerLoginPage = () => {
             onChange={(e) => setPassword(e.target.value)}
             aria-label="Customer Password"
           />
-          <button type="button" onClick={togglePasswordVisibility} className="text-gray-600 dark:text-gray-300 ml-2">
+          <button
+            type="button"
+            onClick={togglePasswordVisibility}
+            className="text-gray-600 dark:text-gray-300 ml-2"
+          >
             {showPassword ? <FaEyeSlash /> : <FaEye />}
           </button>
         </div>
@@ -157,7 +176,9 @@ const CustomerLoginPage = () => {
           </label>
           <button
             type="button"
-            onClick={() => toast.info("Forgot Password functionality coming soon!")}
+            onClick={() =>
+              toast.info('Forgot Password functionality coming soon!')
+            }
             className="text-blue-500 hover:underline"
           >
             Forgot Password?
@@ -194,7 +215,7 @@ const CustomerLoginPage = () => {
           type="button"
           className="mt-4 text-sm underline w-full text-center"
         >
-          Toggle {darkMode ? "Light" : "Dark"} Mode
+          Toggle {darkMode ? 'Light' : 'Dark'} Mode
         </button>
       </form>
     </div>

@@ -10,9 +10,12 @@ const TOKEN_KEYS = {
 
 // Save token to localStorage for a specific role (admin or customer)
 export const setToken = (token, role = 'admin') => {
+  console.log(`Setting token for role: ${role}`);
+  console.log(`Token: ${token}`);
   const key = TOKEN_KEYS[role] || TOKEN_KEYS.admin;
+  console.log(`Using key: ${key}`);
   localStorage.setItem(key, token);
-  window.dispatchEvent(new Event("storage")); // Notify other app parts
+  window.dispatchEvent(new Event('storage')); // Notify other app parts
 };
 
 // Retrieve token for a given role
@@ -37,13 +40,13 @@ export const getUserRole = () => {
 export const logout = (role = 'admin') => {
   const key = TOKEN_KEYS[role] || TOKEN_KEYS.admin;
   localStorage.removeItem(key);
-  window.dispatchEvent(new Event("storage"));
+  window.dispatchEvent(new Event('storage'));
 };
 
 // Full logout: remove both tokens
 export const clearAllTokens = () => {
   Object.values(TOKEN_KEYS).forEach(localStorage.removeItem.bind(localStorage));
-  window.dispatchEvent(new Event("storage"));
+  window.dispatchEvent(new Event('storage'));
 };
 
 // Unified login function for admin/customer

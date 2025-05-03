@@ -1,49 +1,51 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
-  BrowserRouter as Router,
+  BrowserRouter as Router, // ✅ Use BrowserRouter for query string handling
   Route,
   Routes,
   Navigate,
   useNavigate,
   useLocation,
-} from "react-router-dom";
+} from 'react-router-dom';
 
 // Components
-import Sidebar from "./components/Sidebar";
-import Protected from "./components/Protected";
+import Sidebar from './components/Sidebar';
+import Protected from './components/Protected';
 
 // Pages
-import Dashboard from "./pages/Dashboard";
-import Customers from "./pages/Customers";
-import Orders from "./pages/Orders";
-import Products from "./pages/Products";
-import About from "./pages/About";
-import EmailVerification from "./pages/EmailVerification";
-import Reports from "./pages/Reports";
-import EmailMarketing from "./pages/EmailMarketing";
-import Financials from "./pages/Financials";
-import Login from "./pages/Login";
-import CustomerLoginPage from "./pages/CustomerLoginPage";
-import CustomerDashboard from "./pages/CustomerDashboard";
-import NotFound from "./pages/NotFound";
+import Dashboard from './pages/Dashboard';
+import Customers from './pages/Customers';
+import Orders from './pages/Orders';
+import Products from './pages/Products';
+import About from './pages/About';
+import EmailVerification from './pages/EmailVerification';
+import Reports from './pages/Reports';
+import EmailMarketing from './pages/EmailMarketing';
+import Financials from './pages/Financials';
+import Login from './pages/Login';
+import CustomerLoginPage from './pages/CustomerLoginPage';
+import CustomerDashboard from './pages/CustomerDashboard';
+import NotFound from './pages/NotFound';
+import Home from './pages/Home'; // Import Home component
 
 // Auth
-import { getToken } from "./auth";
+import { getToken } from './auth';
 
-import "./App.css";
+import './App.css';
 
-// Google OAuth handler
+// ✅ Google OAuth handler
 function GoogleAuthHandler({ setToken }) {
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
-    const tokenFromGoogle = urlParams.get("token");
+    const tokenFromGoogle = urlParams.get('token');
+
     if (tokenFromGoogle) {
-      localStorage.setItem("admin_token", tokenFromGoogle);
+      localStorage.setItem('admin_token', tokenFromGoogle);
       setToken(tokenFromGoogle);
-      navigate("/dashboard");
+      navigate('/dashboard', { replace: true }); // ✅ Navigate and clean URL
     }
   }, [location, navigate, setToken]);
 
@@ -55,15 +57,15 @@ function AppLayout({ children, adminToken }) {
   const location = useLocation();
 
   const isAdminRoute = [
-    "/dashboard",
-    "/customers",
-    "/orders",
-    "/products",
-    "/financials",
-    "/reports",
-    "/about",
-    "/email-verification",
-    "/email-marketing",
+    '/dashboard',
+    '/customers',
+    '/orders',
+    '/products',
+    '/financials',
+    '/reports',
+    '/about',
+    '/email-verification',
+    '/email-marketing',
   ].some((route) => location.pathname.startsWith(route));
 
   return (
@@ -75,16 +77,16 @@ function AppLayout({ children, adminToken }) {
 }
 
 function App() {
-  const [adminToken, setAdminToken] = useState(getToken("admin"));
-  const [customerToken, setCustomerToken] = useState(getToken("customer"));
+  const [adminToken, setAdminToken] = useState(getToken('admin'));
+  const [customerToken, setCustomerToken] = useState(getToken('customer'));
 
   useEffect(() => {
     const handleStorageChange = () => {
-      setAdminToken(getToken("admin"));
-      setCustomerToken(getToken("customer"));
+      setAdminToken(getToken('admin'));
+      setCustomerToken(getToken('customer'));
     };
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   return (
@@ -93,10 +95,7 @@ function App() {
       <AppLayout adminToken={adminToken}>
         <Routes>
           {/* Default Root: Redirect to Admin Login */}
-          <Route
-            path="/"
-            element={<Navigate to="/login" replace />}
-          />
+          <Route path="/" element={<Home />} />
 
           {/* Admin Login */}
           <Route
@@ -129,17 +128,73 @@ function App() {
               )
             }
           />
+          <Route path="/about" element={<About />} />
 
           {/* Admin Protected Routes */}
-          <Route path="/dashboard" element={<Protected><Dashboard /></Protected>} />
-          <Route path="/customers" element={<Protected><Customers /></Protected>} />
-          <Route path="/orders" element={<Protected><Orders /></Protected>} />
-          <Route path="/products" element={<Protected><Products /></Protected>} />
-          <Route path="/financials" element={<Protected><Financials /></Protected>} />
-          <Route path="/about" element={<Protected><About /></Protected>} />
-          <Route path="/email-verification" element={<Protected><EmailVerification /></Protected>} />
-          <Route path="/reports" element={<Protected><Reports /></Protected>} />
-          <Route path="/email-marketing" element={<Protected><EmailMarketing /></Protected>} />
+          <Route
+            path="/dashboard"
+            element={
+              <Protected>
+                <Dashboard />
+              </Protected>
+            }
+          />
+          <Route
+            path="/customers"
+            element={
+              <Protected>
+                <Customers />
+              </Protected>
+            }
+          />
+          <Route
+            path="/orders"
+            element={
+              <Protected>
+                <Orders />
+              </Protected>
+            }
+          />
+          <Route
+            path="/products"
+            element={
+              <Protected>
+                <Products />
+              </Protected>
+            }
+          />
+          <Route
+            path="/financials"
+            element={
+              <Protected>
+                <Financials />
+              </Protected>
+            }
+          />
+          <Route
+            path="/email-verification"
+            element={
+              <Protected>
+                <EmailVerification />
+              </Protected>
+            }
+          />
+          <Route
+            path="/reports"
+            element={
+              <Protected>
+                <Reports />
+              </Protected>
+            }
+          />
+          <Route
+            path="/email-marketing"
+            element={
+              <Protected>
+                <EmailMarketing />
+              </Protected>
+            }
+          />
 
           {/* 404 Page */}
           <Route path="*" element={<NotFound />} />

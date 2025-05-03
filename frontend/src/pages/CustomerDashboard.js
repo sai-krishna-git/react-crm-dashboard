@@ -1,41 +1,47 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { getToken, logout } from "../auth";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getToken, logout } from '../auth';
 
 const CustomerDashboard = () => {
   const navigate = useNavigate();
   const [customer, setCustomer] = useState(null);
   const [orders, setOrders] = useState([]);
-  const [darkMode, setDarkMode] = useState(localStorage.getItem("customerDarkMode") === "true");
+  const [darkMode, setDarkMode] = useState(
+    localStorage.getItem('customerDarkMode') === 'true'
+  );
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = getToken("customer");
+    const token = getToken('customer');
+    console.log('Customer token:', token); // Debugging line
     if (!token) {
-      navigate("/customer-login");
+      navigate('/customer-login');
       return;
     }
 
     const fetchCustomerData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/customers/profile", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await fetch(
+          'http://localhost:5000/api/customers/profile',
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
         if (response.ok) {
           const data = await response.json();
           // If your backend returns just customer object (not wrapped)
-          setCustomer(data.customer || data); 
+          setCustomer(data.customer || data);
           setOrders(data.orders || []);
         } else if (response.status === 401) {
-          logout("customer");
-          navigate("/customer-login");
+          logout('customer');
+          navigate('/customer-login');
         } else {
-          console.error("Failed to fetch customer data");
+          console.error('Failed to fetch customer data');
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
-        navigate("/customer-login");
+        console.error('Error fetching data:', error);
+        navigate('/customer-login');
       } finally {
         setLoading(false);
       }
@@ -45,14 +51,14 @@ const CustomerDashboard = () => {
   }, [navigate]);
 
   const handleLogout = () => {
-    logout("customer");
-    navigate("/customer-login");
+    logout('customer');
+    navigate('/customer-login');
   };
 
   const toggleDarkMode = () => {
     const newMode = !darkMode;
     setDarkMode(newMode);
-    localStorage.setItem("customerDarkMode", newMode.toString());
+    localStorage.setItem('customerDarkMode', newMode.toString());
   };
 
   if (loading) {
@@ -74,7 +80,7 @@ const CustomerDashboard = () => {
   return (
     <div
       className={`min-h-screen p-6 transition-colors duration-500 ${
-        darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-black"
+        darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-black'
       }`}
     >
       <div className="max-w-4xl mx-auto">
@@ -86,7 +92,7 @@ const CustomerDashboard = () => {
             onClick={toggleDarkMode}
             className="px-3 py-1 text-sm rounded bg-gray-300 dark:bg-gray-700"
           >
-            {darkMode ? "Light Mode" : "Dark Mode"}
+            {darkMode ? 'Light Mode' : 'Dark Mode'}
           </button>
         </div>
         <p className="text-gray-600 dark:text-gray-300 mb-6">
@@ -96,9 +102,15 @@ const CustomerDashboard = () => {
         {/* Profile */}
         <div className="p-4 bg-white dark:bg-gray-800 shadow-lg rounded-lg">
           <h2 className="text-xl font-semibold mb-2">Your Profile</h2>
-          <p><strong>Email:</strong> {customer?.email}</p>
-          <p><strong>Phone:</strong> {customer?.phone}</p>
-          <p><strong>Address:</strong> {customer?.address}</p>
+          <p>
+            <strong>Email:</strong> {customer?.email}
+          </p>
+          <p>
+            <strong>Phone:</strong> {customer?.phone}
+          </p>
+          <p>
+            <strong>Address:</strong> {customer?.address}
+          </p>
         </div>
 
         {/* Orders */}
@@ -111,14 +123,16 @@ const CustomerDashboard = () => {
                   key={order.id}
                   className="flex justify-between items-center border-b pb-2"
                 >
-                  <span>{order.product} ({order.date})</span>
+                  <span>
+                    {order.product} ({order.date})
+                  </span>
                   <span
                     className={`px-2 py-1 rounded-full text-white text-sm ${
-                      order.status === "Delivered"
-                        ? "bg-green-500"
-                        : order.status === "Shipped"
-                        ? "bg-blue-500"
-                        : "bg-yellow-500"
+                      order.status === 'Delivered'
+                        ? 'bg-green-500'
+                        : order.status === 'Shipped'
+                        ? 'bg-blue-500'
+                        : 'bg-yellow-500'
                     }`}
                   >
                     {order.status}

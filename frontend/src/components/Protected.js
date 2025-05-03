@@ -1,12 +1,17 @@
 // src/components/Protected.js
 
-import React from "react";
-import { Navigate } from "react-router-dom";
-import { isAuthenticated, getUserRole } from "../auth";
+import React from 'react';
+import { Navigate } from 'react-router-dom';
+import { isAuthenticated, getUserRole } from '../auth';
 
 const Protected = ({ children, expectedRole }) => {
   if (!isAuthenticated()) {
-    return <Navigate to={expectedRole === "customer" ? "/customer-login" : "/login"} replace />;
+    return (
+      <Navigate
+        to={expectedRole === 'customer' ? '/customer-login' : '/login'}
+        replace
+      />
+    );
   }
 
   const userRole = getUserRole(); // Assumes function exists to get role: 'admin' or 'customer'
