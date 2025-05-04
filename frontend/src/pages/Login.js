@@ -45,31 +45,27 @@ const Login = () => {
       toast.error('Please enter both email and password.');
       return;
     }
-    if (email === 'admin@gmail.com' && password === 'admin123') {
-      try {
-        const response = await fetch('http://localhost:5000/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password }),
-        });
+    try {
+      const response = await fetch('http://localhost:5000/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
-        const data = await response.json();
+      const data = await response.json();
 
-        if (!response.ok) {
-          toast.error(data.message || 'Invalid Credentials!');
-          return;
-        }
-
-        // Save the token and navigate to the dashboard
-        setToken(data.token, 'admin');
-        toast.success('Login Successful');
-        navigate('/dashboard');
-      } catch (error) {
-        console.error('Error during login:', error);
-        toast.error('Something went wrong. Please try again.');
+      if (!response.ok) {
+        toast.error(data.message || 'Invalid Credentials!');
+        return;
       }
-    } else {
-      toast.error('Invalid Credentials!');
+
+      // Save the token and navigate to the dashboard
+      setToken(data.token, 'admin');
+      toast.success('Login Successful');
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Error during login:', error);
+      toast.error('Something went wrong. Please try again.');
     }
   };
 
