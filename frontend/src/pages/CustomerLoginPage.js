@@ -42,9 +42,7 @@ const CustomerLoginPage = () => {
       if (name && email) {
         localStorage.setItem('user', JSON.stringify({ name, email }));
       }
-      toast.success(
-        `Customer Login Successful${name ? ` - Welcome ${name}` : ''}`
-      );
+      toast.success(`Customer Login Successful. Welcome Customer`);
       navigate('/customer-dashboard');
       window.history.replaceState({}, document.title, window.location.pathname);
     }
@@ -184,6 +182,13 @@ const CustomerLoginPage = () => {
             Forgot Password?
           </button>
         </div>
+        <button
+          type="button"
+          onClick={() => navigate('/customer-register')}
+          className="text-blue-500 hover:underline"
+        >
+          Register now?
+        </button>
 
         <button
           type="submit"

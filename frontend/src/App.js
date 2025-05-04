@@ -9,6 +9,10 @@ import {
   useLocation,
 } from 'react-router-dom';
 
+// Add this import for toast
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 // Components
 import Sidebar from './components/Sidebar';
 import Protected from './components/Protected';
@@ -28,6 +32,8 @@ import CustomerLoginPage from './pages/CustomerLoginPage';
 import CustomerDashboard from './pages/CustomerDashboard';
 import NotFound from './pages/NotFound';
 import Home from './pages/Home'; // Import Home component
+import AdminRegister from './pages/AdminRegister';
+import CustomerRegister from './pages/CustomerRegister';
 
 // Auth
 import { getToken } from './auth';
@@ -92,6 +98,18 @@ function App() {
 
   return (
     <Router>
+      {/* Add ToastContainer here */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <GoogleAuthHandler setToken={setAdminToken} />
       <AppLayout adminToken={adminToken}>
         <Routes>
@@ -129,6 +147,9 @@ function App() {
               )
             }
           />
+          <Route path="/admin-register" element={<AdminRegister />} />
+          <Route path="/customer-register" element={<CustomerRegister />} />
+
           <Route path="/about" element={<About />} />
 
           {/* Admin Protected Routes */}

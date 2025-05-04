@@ -38,7 +38,7 @@ const ProductCard = ({ product, onAddToCart }) => {
             : product.description}
         </p>
         <div className="mt-3 flex items-center justify-between">
-          <p className="font-bold text-lg">${product.price.toFixed(2)}</p>
+          <p className="font-bold text-lg">₹{product.price.toFixed(2)}</p>
           <div>
             <span
               className={`text-xs ${

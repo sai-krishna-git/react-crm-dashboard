@@ -75,7 +75,14 @@ exports.getAllCustomers = async (req, res) => {
  */
 exports.addCustomer = async (req, res) => {
   try {
-    const { firstName, lastName, email, phone, password = '123456' } = req.body;
+    const {
+      firstName,
+      lastName,
+      email,
+      phone,
+      password = '123456',
+      address = 'VIT, Amaravati, Vijayawada, Andhra Pradesh-522237',
+    } = req.body;
     const name = `${firstName} ${lastName}`; // Combine first and last name
     // Check if all required fields are provided
     if (!name || !email || !password) {
@@ -96,6 +103,7 @@ exports.addCustomer = async (req, res) => {
       email,
       password,
       phone,
+      address,
     });
 
     await newCustomer.save();

@@ -271,7 +271,7 @@ const Products = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Price ($)
+                  Price (₹)
                 </label>
                 <input
                   type="number"
@@ -436,7 +436,7 @@ const Products = () => {
                       </span>
                     </div>
                     <p className="text-gray-600 font-medium text-lg">
-                      ${product.price.toFixed(2)}
+                      ₹{product.price.toFixed(2)}
                     </p>
                     <p className="text-gray-500 text-sm mb-3 h-12 overflow-hidden">
                       {product.description.substring(0, 60)}

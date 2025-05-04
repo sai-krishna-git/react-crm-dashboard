@@ -220,7 +220,7 @@ const Orders = () => {
                       {formatDate(order.createdAt)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium text-gray-900">
-                      ${order.totalPrice.toFixed(2)}
+                      ₹{order.totalPrice.toFixed(2)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-center">
                       <span

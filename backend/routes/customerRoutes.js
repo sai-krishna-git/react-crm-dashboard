@@ -41,6 +41,6 @@ router.put('/:id', authMiddleware, adminMiddleware, updateCustomer);
 router.delete('/:id', authMiddleware, adminMiddleware, deleteCustomer);
 
 // \u2705 POST /api/customers - Create a new customer (Admin only)
-router.post('/', authMiddleware, adminMiddleware, addCustomer);
+router.post('/', addCustomer);
 
 module.exports = router;

@@ -81,7 +81,7 @@ const Dashboard = () => {
           {
             icon: FaShoppingCart,
             label: 'Total Profit',
-            value: '$1.5M',
+            value: '₹1.5M',
             color: 'bg-red-500 dark:bg-red-700',
           },
           {

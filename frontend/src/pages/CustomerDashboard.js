@@ -304,7 +304,7 @@ const CustomerDashboardContent = () => {
         </div>
         <div className="bg-green-50 dark:bg-green-900/30 p-4 rounded-lg text-center">
           <span className="block text-3xl font-bold text-green-600 dark:text-green-400">
-            $
+            ₹
             {orders
               .reduce((total, order) => total + (order.totalPrice || 0), 0)
               .toFixed(2)}
@@ -554,7 +554,7 @@ const CustomerDashboardContent = () => {
                   <div className="space-y-3">
                     <div className="flex justify-between">
                       <span>Subtotal:</span>
-                      <span>${cartTotal.toFixed(2)}</span>
+                      <span>₹{cartTotal.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Shipping:</span>
@@ -564,19 +564,19 @@ const CustomerDashboardContent = () => {
                             Free
                           </span>
                         ) : (
-                          '$10.00'
+                          '₹50.00'
                         )}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span>Tax (15%):</span>
-                      <span>${(cartTotal * 0.15).toFixed(2)}</span>
+                      <span>₹{(cartTotal * 0.15).toFixed(2)}</span>
                     </div>
                     <div className="border-t dark:border-gray-600 my-2 pt-2"></div>
                     <div className="flex justify-between font-bold text-xl">
                       <span>Total:</span>
                       <span>
-                        $
+                        ₹
                         {(
                           cartTotal +
                           (cartTotal > 100 ? 0 : 10) +
@@ -717,7 +717,7 @@ const CustomerDashboardContent = () => {
                           {order.status || 'Processing'}
                         </span>
                         <span className="font-bold text-lg">
-                          ${(order.totalPrice || 0).toFixed(2)}
+                          ₹{(order.totalPrice || 0).toFixed(2)}
                         </span>
                       </div>
                     </div>
@@ -751,12 +751,12 @@ const CustomerDashboardContent = () => {
                                     {item.name || 'Product'}
                                   </p>
                                   <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                                    ${item.price || 0} × {item.quantity || 0}
+                                    ₹{item.price || 0} × {item.quantity || 0}
                                   </p>
                                 </div>
                               </div>
                               <p className="font-medium text-gray-900 dark:text-gray-100">
-                                $
+                                ₹
                                 {(
                                   (item.price || 0) * (item.quantity || 0)
                                 ).toFixed(2)}

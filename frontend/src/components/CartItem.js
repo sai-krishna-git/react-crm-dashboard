@@ -20,7 +20,7 @@ const CartItem = ({ item }) => {
         <div>
           <h3 className="font-medium">{item.name}</h3>
           <p className="text-gray-500 dark:text-gray-400">
-            ${item.price.toFixed(2)} each
+            ₹{item.price.toFixed(2)} each
           </p>
         </div>
       </div>
@@ -45,7 +45,7 @@ const CartItem = ({ item }) => {
 
         <div className="text-right">
           <p className="font-medium">
-            ${(item.price * item.quantity).toFixed(2)}
+            ₹{(item.price * item.quantity).toFixed(2)}
           </p>
           <button
             onClick={() => removeFromCart(item._id)}

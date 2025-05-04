@@ -147,6 +147,13 @@ const Login = () => {
             Forgot Password?
           </button>
         </div>
+        <button
+          type="button"
+          onClick={() => navigate('/admin-register')}
+          className="text-blue-500 hover:underline"
+        >
+          Register now?
+        </button>
 
         {/* Login Button */}
         <button
