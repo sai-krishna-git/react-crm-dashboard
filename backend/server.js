@@ -128,7 +128,8 @@ app.use('/api/customers/auth', require('./routes/customerAuthRoutes')); // Custo
 app.use('/api/email', require('./routes/emailRoutes')); // Email sending
 app.use('/api/reports', require('./routes/reportRoutes')); // Reports
 app.use('/api/finance', require('./routes/financeRoutes')); // Finance
-
+app.use('/api/products', require('./routes/productRoutes'));
+app.use('/api/orders', require('./routes/orderRoutes'));
 // ==========================
 // ❤️ Healthcheck
 // ==========================

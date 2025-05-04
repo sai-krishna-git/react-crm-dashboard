@@ -1,11 +1,9 @@
 Type,ID,Name/Email/Order,Details
-Order,67d1b5ba88210c2042584a2b,John Doe,"Total: $N/A, Status: Shipped"
-Order,67d1b5ba88210c2042584a2c,Jane Smith,"Total: $N/A, Status: Pending"
-Order,67d1b5ba88210c2042584a2d,Michael Brown,"Total: $N/A, Status: Delivered"
-Order,67d1b5ba88210c2042584a2e,Emily Johnson,"Total: $N/A, Status: Shipped"
-Order,67d1b5ba88210c2042584a2f,David Lee,"Total: $N/A, Status: Pending"
-Product,67d1b5c788210c2042584a30,Laptop,Price: $N/A
-Product,67d1b5c788210c2042584a31,Smartphone,Price: $N/A
-Product,67d1b5c788210c2042584a32,Headphones,Price: $N/A
-Product,67d1b5c788210c2042584a33,Tablet,Price: $N/A
-Product,67d1b5c788210c2042584a34,Camera,Price: $N/A
+User,Sai@gmail.com,Sai@gmail.com,Email Opened: No
+User,admin@gmail.com,admin@gmail.com,Email Opened: No
+Order,68174d038df4c1073bdaae69,68145f5a945024b437e2d32f,"Total: $N/A, Status: Shipped"
+Order,68174f1a8df4c1073bdaaeb8,68145f5a945024b437e2d32f,"Total: $N/A, Status: Processing"
+Order,68174f2c8df4c1073bdaaec7,68145f5a945024b437e2d32f,"Total: $N/A, Status: Processing"
+Order,6817518a8df4c1073bdaaf25,68145f5a945024b437e2d32f,"Total: $N/A, Status: Processing"
+Product,681716219e7eb1b94018aa5c,Mobile,Price: $199
+Product,68174c7d8df4c1073bdaae2b,Laptop,Price: $1000

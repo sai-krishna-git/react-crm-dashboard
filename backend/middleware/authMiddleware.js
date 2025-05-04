@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User'); // Updated to use the User model
-const CUstomer = require('../models/Customer'); // Updated to use the Customer model
 const Customer = require('../models/Customer');
 
 // General Authentication Middleware (Verifies JWT Token)

@@ -12,7 +12,7 @@ import {
 } from 'react-icons/fa';
 
 const Login = () => {
-  const [username, setUsername] = useState('');
+  const [email, setemail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
@@ -41,16 +41,16 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    if (!username || !password) {
-      toast.error('Please enter both username and password.');
+    if (!email || !password) {
+      toast.error('Please enter both email and password.');
       return;
     }
-    if (username === 'admin@gmail.com' && password === 'admin123') {
+    if (email === 'admin@gmail.com' && password === 'admin123') {
       try {
         const response = await fetch('http://localhost:5000/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: username, password }),
+          body: JSON.stringify({ email, password }),
         });
 
         const data = await response.json();
@@ -102,15 +102,15 @@ const Login = () => {
         </button>
         <h2 className="text-3xl mb-6 text-center font-bold">Admin Login</h2>
 
-        {/* Username */}
+        {/* Email */}
         <div className="flex items-center border rounded px-2 mb-4 bg-white/20 dark:bg-white/10">
           <FaUser className="text-gray-600 dark:text-gray-300 mr-2" />
           <input
-            type="text"
-            placeholder="Username"
+            type="email"
+            placeholder="email"
             className="w-full bg-transparent p-2 focus:outline-none"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={email}
+            onChange={(e) => setemail(e.target.value)}
           />
         </div>
 
