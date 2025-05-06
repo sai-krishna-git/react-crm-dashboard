@@ -220,7 +220,7 @@ const Products = () => {
   const isAdmin = !!token;
 
   return (
-    <div className="p-6 lg:ml-64 md:ml-48 sm:ml-0 transition-all duration-300">
+    <div className="p-6 transition-all duration-300">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
           🛍️ Products Management

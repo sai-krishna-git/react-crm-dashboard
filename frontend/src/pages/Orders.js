@@ -149,7 +149,7 @@ const Orders = () => {
   }
 
   return (
-    <div className="p-6 lg:ml-64 md:ml-48 sm:ml-0 transition-all duration-300">
+    <div className="p-6">
       <h2 className="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-2">
         <FaBox className="text-blue-500" /> Orders Management
       </h2>

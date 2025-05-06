@@ -118,16 +118,9 @@ router.get('/profile', customerMiddleware, async (req, res) => {
       return res.status(404).json({ error: 'Customer not found' });
     }
 
-    // Mock order data — replace this with real DB fetch later
-    const orders = [
-      { id: 1, product: 'Product A', date: '2025-04-01', status: 'Delivered' },
-      { id: 2, product: 'Product B', date: '2025-04-15', status: 'Shipped' },
-    ];
-
     res.status(200).json({
       message: 'Customer profile data fetched successfully',
       customer,
-      orders,
     });
   } catch (error) {
     console.error('❌ Profile Error:', error);

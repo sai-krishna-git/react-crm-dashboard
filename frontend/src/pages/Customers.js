@@ -112,7 +112,7 @@ const Customers = () => {
   };
 
   return (
-    <div className="p-6 ml-64">
+    <div className="p-6">
       <h2 className="text-3xl font-bold text-gray-800 mb-6">Customers</h2>
 
       {error && <p className="text-red-500 mb-4">{error}</p>}

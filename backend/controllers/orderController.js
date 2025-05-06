@@ -48,6 +48,9 @@ exports.createOrder = async (req, res) => {
       taxPrice,
       totalPrice,
       status: paymentMethod === 'Cash' ? 'Delivered' : 'Processing',
+      isPaid: paymentMethod === 'Cash',
+      paidAt: paymentMethod === 'Cash' ? Date.now() : null,
+      deliveredAt: paymentMethod === 'Cash' ? Date.now() : null,
     });
 
     const savedOrder = await order.save();
@@ -144,6 +147,8 @@ exports.updateOrderStatus = async (req, res) => {
     order.status = status;
 
     if (status === 'Delivered') {
+      order.isPaid = true;
+      order.paidAt = Date.now();
       order.deliveredAt = Date.now();
     }
 

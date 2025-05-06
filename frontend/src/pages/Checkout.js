@@ -24,7 +24,6 @@ const Checkout = () => {
   const [loading, setLoading] = useState(true);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderDetails, setOrderDetails] = useState(null);
-  const [showAddForm, setShowAddForm] = useState(false);
   const [newCustomer, setNewCustomer] = useState({
     firstName: '',
     lastName: '',
@@ -313,7 +312,7 @@ const Checkout = () => {
   }
 
   return (
-    <div className="p-6 lg:ml-64 md:ml-48 sm:ml-0 transition-all duration-300">
+    <div className="p-6 transition-all duration-300">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">
         Offline Order Checkout
       </h1>

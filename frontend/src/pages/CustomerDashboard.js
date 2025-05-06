@@ -59,7 +59,6 @@ const CustomerDashboardContent = () => {
         if (response.ok) {
           const data = await response.json();
           setCustomer(data.customer || data);
-          setOrders(data.orders || []);
         } else if (response.status === 401) {
           logout('customer');
           navigate('/customer-login');

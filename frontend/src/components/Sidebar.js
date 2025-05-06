@@ -41,8 +41,8 @@ const Sidebar = () => {
 
   return (
     <>
-      {/* Hamburger for mobile */}
-      <div className="p-4 md:hidden bg-blue-900">
+      {/* Hamburger for mobile - make this fixed at the top */}
+      <div className="p-4 md:hidden bg-blue-900 fixed top-0 left-0 w-full z-40">
         <button onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? (
             <MdClose size={24} className="text-white" />
@@ -52,16 +52,19 @@ const Sidebar = () => {
         </button>
       </div>
 
-      {/* Sidebar */}
+      {/* Add spacing for mobile to prevent content from hiding behind the hamburger */}
+      <div className="md:hidden h-16"></div>
+
+      {/* Sidebar - updated to be fixed and handle scrolling */}
       <div
-        className={`bg-blue-900 text-white w-64 space-y-6 py-7 px-2 fixed md:relative md:translate-x-0 transform ${
+        className={`bg-blue-900 text-white w-64 space-y-6 py-7 px-2 fixed inset-y-0 left-0 md:relative md:translate-x-0 transform ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
-        } transition-transform duration-200 ease-in-out h-screen z-50 flex flex-col`}
+        } transition-transform duration-200 ease-in-out overflow-y-auto z-50 flex flex-col`}
       >
         <h2 className="text-2xl font-bold text-center mb-6">Admin Panel</h2>
 
         {/* Menu */}
-        <ul className="flex-1">
+        <ul className="overflow-y-auto">
           {menuItems.map((item, index) => {
             const isActive = location.pathname === item.path;
             return (
@@ -79,16 +82,18 @@ const Sidebar = () => {
               </li>
             );
           })}
-        </ul>
 
-        {/* Logout */}
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-2 p-2 w-full bg-red-600 rounded hover:bg-red-700 mt-auto"
-        >
-          <MdOutlineLogout className="text-xl" />
-          <span>Logout</span>
-        </button>
+          {/* Logout - moved inside the ul, right after the menu items */}
+          <li className="mb-3 mt-6">
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-3 p-2 w-full bg-red-600 rounded hover:bg-red-700 text-left"
+            >
+              <MdOutlineLogout className="text-xl" />
+              <span>Logout</span>
+            </button>
+          </li>
+        </ul>
       </div>
     </>
   );
