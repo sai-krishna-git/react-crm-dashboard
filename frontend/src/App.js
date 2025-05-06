@@ -34,6 +34,7 @@ import NotFound from './pages/NotFound';
 import Home from './pages/Home'; // Import Home component
 import AdminRegister from './pages/AdminRegister';
 import CustomerRegister from './pages/CustomerRegister';
+import Checkout from './pages/Checkout';
 
 // Auth
 import { getToken } from './auth';
@@ -65,6 +66,7 @@ function AppLayout({ children, adminToken }) {
 
   const isAdminRoute = [
     '/dashboard',
+    '/checkout',
     '/customers',
     '/orders',
     '/products',
@@ -158,6 +160,14 @@ function App() {
             element={
               <Protected>
                 <Dashboard />
+              </Protected>
+            }
+          />
+          <Route
+            path="/checkout"
+            element={
+              <Protected>
+                <Checkout />
               </Protected>
             }
           />

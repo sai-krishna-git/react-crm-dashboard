@@ -162,6 +162,7 @@ const CustomerDashboardContent = () => {
 
       const orderData = {
         orderItems,
+        customer: customer._id,
         shippingAddress,
         paymentMethod: 'Pay on Delivery',
         itemsPrice,

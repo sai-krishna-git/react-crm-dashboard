@@ -10,6 +10,7 @@ exports.createOrder = async (req, res) => {
   try {
     const {
       orderItems,
+      customer,
       shippingAddress,
       paymentMethod,
       itemsPrice,
@@ -25,7 +26,7 @@ exports.createOrder = async (req, res) => {
 
     // Create the order
     const order = new Order({
-      customer: req.user.id,
+      customer,
       orderItems: await Promise.all(
         orderItems.map(async (item) => {
           const product = await Product.findById(item.product);
@@ -41,12 +42,12 @@ exports.createOrder = async (req, res) => {
         })
       ),
       shippingAddress,
-      paymentMethod: 'Pay on Delivery',
+      paymentMethod,
       itemsPrice,
       shippingPrice,
       taxPrice,
       totalPrice,
-      status: 'Processing',
+      status: paymentMethod === 'Cash' ? 'Delivered' : 'Processing',
     });
 
     const savedOrder = await order.save();

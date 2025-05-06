@@ -16,7 +16,7 @@ const {
 const router = express.Router();
 
 // Customer routes
-router.post('/', customerMiddleware, createOrder);
+router.post('/', createOrder);
 router.get('/my-orders', customerMiddleware, getMyOrders);
 
 // Shared routes (for both customer and admin)
