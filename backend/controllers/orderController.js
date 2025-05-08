@@ -17,6 +17,8 @@ exports.createOrder = async (req, res) => {
       shippingPrice,
       taxPrice,
       totalPrice,
+      isPaid,
+      paidAt,
     } = req.body;
 
     // Validate that order items exist
@@ -48,8 +50,17 @@ exports.createOrder = async (req, res) => {
       taxPrice,
       totalPrice,
       status: paymentMethod === 'Cash' ? 'Delivered' : 'Processing',
-      isPaid: paymentMethod === 'Cash',
-      paidAt: paymentMethod === 'Cash' ? Date.now() : null,
+      // Handle payment status based on the payment method
+      isPaid:
+        paymentMethod === 'Cash' ||
+        paymentMethod === 'Stripe' ||
+        isPaid === true,
+      paidAt:
+        paymentMethod === 'Cash' ||
+        paymentMethod === 'Stripe' ||
+        isPaid === true
+          ? paidAt || Date.now()
+          : null,
       deliveredAt: paymentMethod === 'Cash' ? Date.now() : null,
     });
 

@@ -37,6 +37,13 @@ const CustomerDashboardContent = () => {
   const [cartAddSuccess, setCartAddSuccess] = useState(false);
   const [cartAddMessage, setCartAddMessage] = useState('');
   const [profileExpanded, setProfileExpanded] = useState(false);
+  // Add these to your state declarations at the top
+  const [showStripeModal, setShowStripeModal] = useState(false);
+  const [processingPayment, setProcessingPayment] = useState(false);
+  const [cardNumber, setCardNumber] = useState('');
+  const [cardExpiry, setCardExpiry] = useState('');
+  const [cardCvc, setCardCvc] = useState('');
+  const [cardName, setCardName] = useState('');
 
   const { cart, cartTotal, clearCart } = useCart();
 
@@ -196,6 +203,94 @@ const CustomerDashboardContent = () => {
     } catch (error) {
       console.error('Error placing order:', error);
       alert('Failed to place order. Please try again.');
+    }
+  };
+  // Add this function to handle opening the Stripe modal
+  const handleStripePayment = () => {
+    if (!shippingAddress) {
+      alert('Please provide a shipping address');
+      return;
+    }
+    setShowStripeModal(true);
+  };
+
+  // Add this function to process Stripe payment
+  const processStripePayment = async (e) => {
+    e.preventDefault();
+
+    // Validate form
+    if (!cardNumber || !cardExpiry || !cardCvc || !cardName) {
+      alert('Please fill all payment details');
+      return;
+    }
+
+    setProcessingPayment(true);
+
+    try {
+      // Calculate prices (same as in placeOrder)
+      const itemsPrice = cartTotal;
+      const shippingPrice = cartTotal > 100 ? 0 : 10;
+      const taxPrice = Number((0.15 * itemsPrice).toFixed(2));
+      const totalPrice = Number(
+        (itemsPrice + shippingPrice + taxPrice).toFixed(2)
+      );
+
+      // Format order items
+      const orderItems = cart.map((item) => ({
+        product: item._id,
+        quantity: item.quantity,
+      }));
+
+      const orderData = {
+        orderItems,
+        customer: customer._id,
+        shippingAddress,
+        paymentMethod: 'Stripe', // Change to 'Stripe'
+        itemsPrice,
+        shippingPrice,
+        taxPrice,
+        totalPrice,
+        isPaid: true, // Mark as paid immediately
+        paidAt: new Date(), // Set payment time to now
+      };
+
+      const token = getToken('customer');
+      const response = await fetch('http://localhost:5000/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(orderData),
+      });
+
+      if (response.ok) {
+        setOrderSuccess(true);
+        clearCart();
+        setShippingAddress('');
+        setShowShippingForm(false);
+        setShowStripeModal(false);
+        fetchOrders(); // Refresh orders list
+
+        // Reset payment form
+        setCardNumber('');
+        setCardExpiry('');
+        setCardCvc('');
+        setCardName('');
+
+        setTimeout(() => {
+          setOrderSuccess(false);
+          setActiveTab('orders');
+        }, 3000);
+      } else {
+        const errorData = await response.json();
+        alert(`Payment failed: ${errorData.message || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Error processing payment:', error);
+      alert('Failed to process payment. Please try again.');
+    } finally {
+      setProcessingPayment(false);
     }
   };
 
@@ -601,7 +696,6 @@ const CustomerDashboardContent = () => {
                           onChange={(e) => setShippingAddress(e.target.value)}
                         />
                       </div>
-
                       <div className="flex flex-col sm:flex-row sm:space-x-3">
                         <button
                           className="w-full sm:flex-1 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center justify-center"
@@ -609,6 +703,12 @@ const CustomerDashboardContent = () => {
                         >
                           <FaBoxOpen className="mr-2" /> Place Order (Pay on
                           Delivery)
+                        </button>
+                        <button
+                          className="w-full sm:flex-1 mt-3 sm:mt-0 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center justify-center"
+                          onClick={handleStripePayment}
+                        >
+                          <FaCreditCard className="mr-2" /> Pay with Stripe
                         </button>
                         <button
                           className="mt-3 sm:mt-0 py-3 px-4 bg-gray-300 dark:bg-gray-600 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-500 transition"
@@ -804,6 +904,161 @@ const CustomerDashboardContent = () => {
           </p>
         </div>
       </footer>
+      {/* Stripe Payment Modal */}
+      {showStripeModal && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md shadow-xl">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold text-gray-800 dark:text-white">
+                Payment with Stripe
+              </h3>
+              <button
+                onClick={() => setShowStripeModal(false)}
+                className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+
+            <form onSubmit={processStripePayment} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Card Holder Name
+                </label>
+                <input
+                  type="text"
+                  placeholder="John Doe"
+                  className="w-full p-3 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  value={cardName}
+                  onChange={(e) => setCardName(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Card Number
+                </label>
+                <input
+                  type="text"
+                  placeholder="4242 4242 4242 4242"
+                  className="w-full p-3 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  value={cardNumber}
+                  onChange={(e) => setCardNumber(e.target.value)}
+                  maxLength="19"
+                  required
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  For testing, use 4242 4242 4242 4242
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Expiration (MM/YY)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="MM/YY"
+                    className="w-full p-3 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    value={cardExpiry}
+                    onChange={(e) => setCardExpiry(e.target.value)}
+                    maxLength="5"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    CVC
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="123"
+                    className="w-full p-3 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    value={cardCvc}
+                    onChange={(e) => setCardCvc(e.target.value)}
+                    maxLength="3"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mt-2 p-3 bg-gray-50 dark:bg-gray-700 rounded-md">
+                <p className="font-medium text-gray-800 dark:text-white">
+                  Order Summary
+                </p>
+                <div className="flex justify-between mt-2">
+                  <span className="text-gray-600 dark:text-gray-400">
+                    Total Amount:
+                  </span>
+                  <span className="font-bold">
+                    ₹
+                    {(
+                      cartTotal +
+                      (cartTotal > 100 ? 0 : 10) +
+                      cartTotal * 0.15
+                    ).toFixed(2)}
+                  </span>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center justify-center"
+                disabled={processingPayment}
+              >
+                {processingPayment ? (
+                  <>
+                    <svg
+                      className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <FaCreditCard className="mr-2" /> Pay ₹
+                    {(
+                      cartTotal +
+                      (cartTotal > 100 ? 0 : 10) +
+                      cartTotal * 0.15
+                    ).toFixed(2)}
+                  </>
+                )}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -32,11 +32,6 @@ const Sidebar = () => {
     { icon: FaChartLine, label: 'Reports', path: '/reports' },
     { icon: FaEnvelope, label: 'Email Marketing', path: '/email-marketing' },
     { icon: FaInfoCircle, label: 'About', path: '/about' },
-    {
-      icon: FaEnvelope,
-      label: 'Email Verification',
-      path: '/email-verification',
-    },
   ];
 
   return (
@@ -55,45 +50,55 @@ const Sidebar = () => {
       {/* Add spacing for mobile to prevent content from hiding behind the hamburger */}
       <div className="md:hidden h-16"></div>
 
-      {/* Sidebar - updated to be fixed and handle scrolling */}
+      {/* Mobile overlay when sidebar is open */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          onClick={() => setIsOpen(false)}
+        ></div>
+      )}
+
+      {/* Sidebar with sticky position for desktop and fixed for mobile */}
       <div
-        className={`bg-blue-900 text-white w-64 space-y-6 py-7 px-2 fixed inset-y-0 left-0 md:relative md:translate-x-0 transform ${
+        className={`bg-blue-900 text-white w-64 h-screen md:sticky md:top-0 fixed inset-y-0 left-0 transform ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
-        } transition-transform duration-200 ease-in-out overflow-y-auto z-50 flex flex-col`}
+        } md:translate-x-0 transition-transform duration-200 ease-in-out z-50 flex flex-col`}
       >
-        <h2 className="text-2xl font-bold text-center mb-6">Admin Panel</h2>
+        <h2 className="text-2xl font-bold text-center py-6">Admin Panel</h2>
 
-        {/* Menu */}
-        <ul className="overflow-y-auto">
-          {menuItems.map((item, index) => {
-            const isActive = location.pathname === item.path;
-            return (
-              <li key={index} className="mb-3">
-                <Link
-                  to={item.path}
-                  onClick={() => setIsOpen(false)}
-                  className={`flex items-center gap-3 p-2 rounded ${
-                    isActive ? 'bg-blue-700' : 'hover:bg-blue-700'
-                  }`}
-                >
-                  <item.icon className="text-xl" />
-                  <span>{item.label}</span>
-                </Link>
-              </li>
-            );
-          })}
+        {/* Scrollable menu area */}
+        <div className="flex-grow overflow-y-auto px-2">
+          <ul>
+            {menuItems.map((item, index) => {
+              const isActive = location.pathname === item.path;
+              return (
+                <li key={index} className="mb-3">
+                  <Link
+                    to={item.path}
+                    onClick={() => setIsOpen(false)}
+                    className={`flex items-center gap-3 p-2 rounded ${
+                      isActive ? 'bg-blue-700' : 'hover:bg-blue-700'
+                    }`}
+                  >
+                    <item.icon className="text-xl" />
+                    <span>{item.label}</span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
 
-          {/* Logout - moved inside the ul, right after the menu items */}
-          <li className="mb-3 mt-6">
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-3 p-2 w-full bg-red-600 rounded hover:bg-red-700 text-left"
-            >
-              <MdOutlineLogout className="text-xl" />
-              <span>Logout</span>
-            </button>
-          </li>
-        </ul>
+        {/* Logout button fixed at bottom */}
+        <div className="p-4 border-t border-blue-800">
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 p-2 w-full bg-red-600 rounded hover:bg-red-700 text-left"
+          >
+            <MdOutlineLogout className="text-xl" />
+            <span>Logout</span>
+          </button>
+        </div>
       </div>
     </>
   );
