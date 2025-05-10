@@ -40,6 +40,14 @@ import Checkout from './pages/Checkout';
 import { getToken } from './auth';
 
 import './App.css';
+// Add these imports at the top
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+
+// Initialize Stripe with your publishable key
+const stripePromise = loadStripe(
+  'pk_test_51RMOGH2EaRQBCdiFaoiJyaeaKRkop7uRT3S82WcYpmk1pAj48R57I0y3FxnmO1OAmZdFfgt3a0N2CRFgmJ4aaQ6Y003LfSos6J'
+);
 
 // ✅ Google OAuth handler
 function GoogleAuthHandler({ setToken }) {
@@ -143,7 +151,9 @@ function App() {
             path="/customer-dashboard"
             element={
               customerToken ? (
-                <CustomerDashboard />
+                <Elements stripe={stripePromise}>
+                  <CustomerDashboard />
+                </Elements>
               ) : (
                 <Navigate to="/customer-login" replace />
               )

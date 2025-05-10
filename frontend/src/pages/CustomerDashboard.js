@@ -20,8 +20,11 @@ import {
 import ProductCard from '../components/ProductCard';
 import CartItem from '../components/CartItem';
 import { CartProvider, useCart } from '../contexts/CartContext';
+import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
 const CustomerDashboardContent = () => {
+  const stripe = useStripe();
+  const elements = useElements();
   const navigate = useNavigate();
   const [customer, setCustomer] = useState(null);
   const [orders, setOrders] = useState([]);
@@ -44,6 +47,7 @@ const CustomerDashboardContent = () => {
   const [cardExpiry, setCardExpiry] = useState('');
   const [cardCvc, setCardCvc] = useState('');
   const [cardName, setCardName] = useState('');
+  const [clientSecret, setClientSecret] = useState('');
 
   const { cart, cartTotal, clearCart } = useCart();
 
@@ -206,28 +210,93 @@ const CustomerDashboardContent = () => {
     }
   };
   // Add this function to handle opening the Stripe modal
-  const handleStripePayment = () => {
+  const handleStripePayment = async () => {
     if (!shippingAddress) {
       alert('Please provide a shipping address');
       return;
     }
-    setShowStripeModal(true);
+
+    try {
+      // Calculate prices
+      const itemsPrice = cartTotal;
+      const shippingPrice = cartTotal > 100 ? 0 : 10;
+      const taxPrice = Number((0.15 * itemsPrice).toFixed(2));
+      const totalPrice = Number(
+        (itemsPrice + shippingPrice + taxPrice).toFixed(2)
+      );
+
+      // Get payment intent from server
+      const token = getToken('customer');
+      const response = await fetch(
+        'http://localhost:5000/api/orders/create-payment-intent',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ amount: totalPrice }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to initialize payment');
+      }
+
+      const data = await response.json();
+      setClientSecret(data.clientSecret);
+      setShowStripeModal(true);
+    } catch (error) {
+      console.error('Error initializing payment:', error);
+      alert('Failed to initialize payment. Please try again.');
+    }
   };
 
   // Add this function to process Stripe payment
   const processStripePayment = async (e) => {
     e.preventDefault();
 
-    // Validate form
-    if (!cardNumber || !cardExpiry || !cardCvc || !cardName) {
-      alert('Please fill all payment details');
+    if (!stripe || !elements) {
+      // Stripe.js hasn't loaded yet
       return;
     }
 
     setProcessingPayment(true);
 
     try {
-      // Calculate prices (same as in placeOrder)
+      // Get card element
+      const cardElement = elements.getElement(CardElement);
+
+      // Use card element with Stripe.js API
+      const { error, paymentIntent } = await stripe.confirmCardPayment(
+        clientSecret,
+        {
+          payment_method: {
+            card: cardElement,
+            billing_details: {
+              name: cardName,
+            },
+          },
+        }
+      );
+
+      if (error) {
+        throw new Error(error.message);
+      } else if (paymentIntent.status === 'succeeded') {
+        // Create order with payment info
+        await createOrderAfterPayment(paymentIntent);
+      }
+    } catch (error) {
+      console.error('Error processing payment:', error);
+      alert(`Payment failed: ${error.message}`);
+    } finally {
+      setProcessingPayment(false);
+    }
+  };
+  // New function to create order after payment
+  const createOrderAfterPayment = async (paymentIntent) => {
+    try {
+      // Calculate prices
       const itemsPrice = cartTotal;
       const shippingPrice = cartTotal > 100 ? 0 : 10;
       const taxPrice = Number((0.15 * itemsPrice).toFixed(2));
@@ -245,13 +314,14 @@ const CustomerDashboardContent = () => {
         orderItems,
         customer: customer._id,
         shippingAddress,
-        paymentMethod: 'Stripe', // Change to 'Stripe'
+        paymentMethod: 'Stripe',
         itemsPrice,
         shippingPrice,
         taxPrice,
         totalPrice,
-        isPaid: true, // Mark as paid immediately
-        paidAt: new Date(), // Set payment time to now
+        isPaid: true,
+        paidAt: new Date(),
+        stripePaymentId: paymentIntent.id,
       };
 
       const token = getToken('customer');
@@ -270,12 +340,9 @@ const CustomerDashboardContent = () => {
         setShippingAddress('');
         setShowShippingForm(false);
         setShowStripeModal(false);
-        fetchOrders(); // Refresh orders list
+        fetchOrders();
 
         // Reset payment form
-        setCardNumber('');
-        setCardExpiry('');
-        setCardCvc('');
         setCardName('');
 
         setTimeout(() => {
@@ -284,13 +351,13 @@ const CustomerDashboardContent = () => {
         }, 3000);
       } else {
         const errorData = await response.json();
-        alert(`Payment failed: ${errorData.message || 'Unknown error'}`);
+        throw new Error(errorData.message || 'Unknown error');
       }
     } catch (error) {
-      console.error('Error processing payment:', error);
-      alert('Failed to process payment. Please try again.');
-    } finally {
-      setProcessingPayment(false);
+      console.error('Error creating order:', error);
+      alert(
+        'Payment succeeded but failed to create order. Please contact support.'
+      );
     }
   };
 
@@ -949,49 +1016,24 @@ const CustomerDashboardContent = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Card Number
+                  Card Details
                 </label>
-                <input
-                  type="text"
-                  placeholder="4242 4242 4242 4242"
-                  className="w-full p-3 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  value={cardNumber}
-                  onChange={(e) => setCardNumber(e.target.value)}
-                  maxLength="19"
-                  required
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  For testing, use 4242 4242 4242 4242
-                </p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Expiration (MM/YY)
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="MM/YY"
-                    className="w-full p-3 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                    value={cardExpiry}
-                    onChange={(e) => setCardExpiry(e.target.value)}
-                    maxLength="5"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    CVC
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="123"
-                    className="w-full p-3 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                    value={cardCvc}
-                    onChange={(e) => setCardCvc(e.target.value)}
-                    maxLength="3"
-                    required
+                <div className="p-3 border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600">
+                  <CardElement
+                    options={{
+                      style: {
+                        base: {
+                          fontSize: '16px',
+                          color: darkMode ? '#ffffff' : '#424770',
+                          '::placeholder': {
+                            color: darkMode ? '#aab7c4' : '#aab7c4',
+                          },
+                        },
+                        invalid: {
+                          color: '#9e2146',
+                        },
+                      },
+                    }}
                   />
                 </div>
               </div>
@@ -1018,7 +1060,7 @@ const CustomerDashboardContent = () => {
               <button
                 type="submit"
                 className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center justify-center"
-                disabled={processingPayment}
+                disabled={processingPayment || !stripe}
               >
                 {processingPayment ? (
                   <>

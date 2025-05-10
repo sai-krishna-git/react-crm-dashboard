@@ -1,5 +1,6 @@
 const Order = require('../models/Order');
 const Product = require('../models/Product');
+const stripe = require('../config/stripe');
 
 /**
  * @desc    Create a new order
@@ -189,5 +190,28 @@ exports.getAllOrders = async (req, res) => {
   } catch (error) {
     console.error('Error fetching all orders:', error.message);
     res.status(500).json({ message: 'Server error while fetching orders' });
+  }
+};
+
+exports.createPaymentIntent = async (req, res) => {
+  try {
+    const { amount } = req.body;
+
+    // Create a PaymentIntent with the order amount and currency
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Math.round(amount * 100), // Stripe uses cents
+      currency: 'inr',
+      // Add other options like receipt_email if needed
+    });
+
+    res.status(200).json({
+      clientSecret: paymentIntent.client_secret,
+    });
+  } catch (error) {
+    console.error('Error creating payment intent:', error);
+    res.status(500).json({
+      message: 'Error creating payment intent',
+      error: error.message,
+    });
   }
 };

@@ -18,6 +18,8 @@ const router = express.Router();
 // Customer routes
 router.post('/', createOrder);
 router.get('/my-orders', customerMiddleware, getMyOrders);
+// Add this route
+router.post('/create-payment-intent', customerMiddleware, createPaymentIntent);
 
 // Shared routes (for both customer and admin)
 router.get('/:id', getOrderById);
