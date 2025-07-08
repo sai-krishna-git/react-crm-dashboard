@@ -97,18 +97,21 @@ const CustomerRegister = () => {
       setIsLoading(true);
       const { firstName, lastName, email, phone, address, password } = formData;
 
-      const response = await fetch('http://localhost:5000/api/customers', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          firstName,
-          lastName,
-          email,
-          phone,
-          address,
-          password,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/customers`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            firstName,
+            lastName,
+            email,
+            phone,
+            address,
+            password,
+          }),
+        }
+      );
 
       const data = await response.json();
 

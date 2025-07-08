@@ -61,7 +61,7 @@ const CustomerDashboardContent = () => {
     const fetchCustomerData = async () => {
       try {
         const response = await fetch(
-          'http://localhost:5000/api/customers/auth/profile',
+          `${process.env.REACT_APP_API_URL}/api/customers/auth/profile`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -83,7 +83,9 @@ const CustomerDashboardContent = () => {
 
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/products');
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/api/products`
+        );
         if (response.ok) {
           const data = await response.json();
           setProducts(data);
@@ -106,7 +108,7 @@ const CustomerDashboardContent = () => {
     const token = getToken('customer');
     try {
       const response = await fetch(
-        'http://localhost:5000/api/orders/my-orders',
+        `${process.env.REACT_APP_API_URL}/api/orders/my-orders`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -181,14 +183,17 @@ const CustomerDashboardContent = () => {
         totalPrice,
       };
 
-      const response = await fetch('http://localhost:5000/api/orders', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(orderData),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/orders`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(orderData),
+        }
+      );
 
       if (response.ok) {
         setOrderSuccess(true);
@@ -228,7 +233,7 @@ const CustomerDashboardContent = () => {
       // Get payment intent from server
       const token = getToken('customer');
       const response = await fetch(
-        'http://localhost:5000/api/orders/create-payment-intent',
+        `${process.env.REACT_APP_API_URL}/api/orders/create-payment-intent`,
         {
           method: 'POST',
           headers: {
@@ -325,14 +330,17 @@ const CustomerDashboardContent = () => {
       };
 
       const token = getToken('customer');
-      const response = await fetch('http://localhost:5000/api/orders', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(orderData),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/orders`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(orderData),
+        }
+      );
 
       if (response.ok) {
         setOrderSuccess(true);

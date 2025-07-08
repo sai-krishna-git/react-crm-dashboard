@@ -25,9 +25,12 @@ const Customers = () => {
     }
     const fetchCustomers = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/customers', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/api/customers`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         if (!response.ok) {
           throw new Error('Failed to fetch customers');
         }
@@ -58,14 +61,17 @@ const Customers = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/customers', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(form),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/customers`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(form),
+        }
+      );
 
       if (response.status === 400) {
         const errorData = await response.json();
@@ -89,7 +95,7 @@ const Customers = () => {
     setError('');
     try {
       const response = await fetch(
-        `http://localhost:5000/api/customers/${id}`,
+        `${process.env.REACT_APP_API_URL}/api/customers/${id}`,
         {
           method: 'DELETE',
           headers: {

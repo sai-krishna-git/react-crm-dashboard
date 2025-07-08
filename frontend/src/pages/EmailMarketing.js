@@ -65,11 +65,14 @@ const EmailMarketing = () => {
     setLoadingCustomers(true);
     try {
       const token = getToken();
-      const response = await fetch('http://localhost:5000/api/customers', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/customers`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error('Failed to fetch customers');
@@ -156,7 +159,7 @@ const EmailMarketing = () => {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(
-        'http://localhost:5000/api/email/send-marketing-email',
+        `${process.env.REACT_APP_API_URL}/api/email/send-marketing-email`,
         {
           method: 'POST',
           headers: {

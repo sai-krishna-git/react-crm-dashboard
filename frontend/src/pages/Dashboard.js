@@ -92,13 +92,13 @@ const Dashboard = () => {
     try {
       // Parallel requests for better performance
       const [ordersRes, customersRes, productsRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/orders/admin/all', {
+        axios.get(`${process.env.REACT_APP_API_URL}/api/orders/admin/all`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get('http://localhost:5000/api/customers', {
+        axios.get(`${process.env.REACT_APP_API_URL}/api/customers`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get('http://localhost:5000/api/products', {
+        axios.get(`${process.env.REACT_APP_API_URL}/api/products`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
       ]);

@@ -34,7 +34,9 @@ const Products = () => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:5000/api/products');
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/products`
+      );
 
       if (!response.ok) {
         throw new Error('Failed to fetch products');
@@ -99,14 +101,17 @@ const Products = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/products', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(form),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/products`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(form),
+        }
+      );
 
       if (!response.ok) {
         const data = await response.json();
@@ -130,12 +135,15 @@ const Products = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/api/products/${id}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/products/${id}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error('Failed to delete product');
@@ -181,7 +189,7 @@ const Products = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/products/${selectedProductId}`,
+        `${process.env.REACT_APP_API_URL}/api/products/${selectedProductId}`,
         {
           method: 'PUT',
           headers: {

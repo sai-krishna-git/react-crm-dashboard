@@ -44,7 +44,7 @@ const Financials = () => {
 
         // Fetch orders
         const ordersRes = await axios.get(
-          'http://localhost:5000/api/orders/admin/all',
+          `${process.env.REACT_APP_API_URL}/api/orders/admin/all`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -54,7 +54,7 @@ const Financials = () => {
 
         // Fetch customers
         const customersRes = await axios.get(
-          'http://localhost:5000/api/customers',
+          `${process.env.REACT_APP_API_URL}/api/customers`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

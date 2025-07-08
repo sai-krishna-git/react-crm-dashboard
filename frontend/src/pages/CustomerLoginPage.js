@@ -58,7 +58,7 @@ const CustomerLoginPage = () => {
 
     try {
       const response = await fetch(
-        'http://localhost:5000/api/customers/auth/login',
+        `${process.env.REACT_APP_API_URL}/api/customers/auth/login`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -94,9 +94,9 @@ const CustomerLoginPage = () => {
   };
 
   const handleGoogleLogin = () =>
-    window.open('http://localhost:5000/auth/google', '_self');
+    window.open(`${process.env.REACT_APP_API_URL}/auth/google`, '_self');
   const handleGitHubLogin = () =>
-    window.open('http://localhost:5000/auth/github', '_self');
+    window.open(`${process.env.REACT_APP_API_URL}/auth/github`, '_self');
 
   const toggleDarkMode = () => {
     const newMode = !darkMode;

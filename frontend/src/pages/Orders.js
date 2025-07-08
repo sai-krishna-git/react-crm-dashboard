@@ -32,7 +32,7 @@ const Orders = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        'http://localhost:5000/api/orders/admin/all',
+        `${process.env.REACT_APP_API_URL}/api/orders/admin/all`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -91,7 +91,7 @@ const Orders = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/orders/${orderId}/status`,
+        `${process.env.REACT_APP_API_URL}/api/orders/${orderId}/status`,
         {
           method: 'PUT',
           headers: {

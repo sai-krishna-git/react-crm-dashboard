@@ -46,11 +46,14 @@ const Login = () => {
       return;
     }
     try {
-      const response = await fetch('http://localhost:5000/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/auth/login`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        }
+      );
 
       const data = await response.json();
 
@@ -70,11 +73,11 @@ const Login = () => {
   };
 
   const handleGoogleLogin = () => {
-    window.open('http://localhost:5000/auth/google', '_self');
+    window.open(`${process.env.REACT_APP_API_URL}/auth/google`, '_self');
   };
 
   const handleGitHubLogin = () => {
-    window.open('http://localhost:5000/auth/github', '_self');
+    window.open(`${process.env.REACT_APP_API_URL}/auth/github`, '_self');
   };
 
   return (
