@@ -159,25 +159,6 @@ const Login = () => {
           Login
         </button>
 
-        {/* OAuth Buttons */}
-        <div className="flex space-x-2 mt-4">
-          <button
-            type="button"
-            onClick={handleGoogleLogin}
-            className="flex-1 flex items-center justify-center border rounded p-2 hover:bg-red-500 hover:text-white transition"
-          >
-            <FaGoogle className="mr-2" /> Google
-          </button>
-
-          <button
-            type="button"
-            onClick={handleGitHubLogin}
-            className="flex-1 flex items-center justify-center border rounded p-2 hover:bg-gray-800 hover:text-white transition"
-          >
-            <FaGithub className="mr-2" /> GitHub
-          </button>
-        </div>
-
         {/* Toggle Mode */}
         <button
           onClick={() => setDarkMode(!darkMode)}
