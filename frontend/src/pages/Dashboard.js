@@ -11,6 +11,9 @@ import {
   PointElement,
   LineElement,
   Title,
+  LineController,
+  BarController,
+  PieController,
 } from 'chart.js';
 import {
   FaShoppingCart,
@@ -36,7 +39,10 @@ ChartJS.register(
   Legend,
   PointElement,
   LineElement,
-  Title
+  Title,
+  LineController,
+  BarController,
+  PieController
 );
 
 const Dashboard = () => {
